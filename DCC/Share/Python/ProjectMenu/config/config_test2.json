@@ -1,0 +1,16 @@
+[
+    {
+        "name": "",
+        "flags": {
+            "dividerLabel": "Utility",
+            "divider": true
+        }
+    },
+    {
+        "name": "",
+        "flags": {
+            "label": "Reload Project Menu",
+            "command": "exec('from ProjectMenu import function as prjFuncs;reload(prjFuncs);prjFuncs.reloadMenu()')"
+        }
+    }
+]
