@@ -1,0 +1,16 @@
+[
+    {
+        "name": "",
+        "flags": {
+            "dividerLabel": "General",
+            "divider": true
+        }
+    },
+    {
+        "name": "menuItem_AssetBrowser",
+        "flags": {
+            "label": "Asset Browser",
+            "command": "from AssetBrowser import interface;reload(interface);interface.main(filters='Autodesk Maya')"
+        }
+    }
+]
