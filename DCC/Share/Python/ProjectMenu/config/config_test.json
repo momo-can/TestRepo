@@ -1,0 +1,172 @@
+[
+    {
+        "name": "menuItem_Animation",
+        "flags": {
+            "label": "Animation",
+            "tearOff": true,
+            "subMenu": true
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "divider": true,
+            "dividerLabel": "File"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Scene Explorer",
+            "command": "from SceneExplorer import interface;reload(interface);interface.main(filters='Autodesk Maya', template='animation')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "menuItem_BuildSceneAnimation",
+        "flags": {
+            "label": "Build Scene",
+            "command": "from buildScene import interface;reload(interface);interface.main(filters='Autodesk Maya', buildTemplate='animation')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Import Scene Settings",
+            "command": "from buildScene import function;reload(function);function.buildFromTemplate(configName='animation_importSceneSettings')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Reconnect Animation",
+            "command": "from buildScene.Plugins import reconnectAnimation;reload(reconnectAnimation);reconnectAnimation.main()"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "divider": true,
+            "dividerLabel": "Tools"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Create Playblast",
+            "command": "from CustomPlayblastLayout import interface;reload(interface);interface.main(filters='Autodesk Maya', department='animation')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "LOD Manager",
+            "command": "from LODManager import interface;reload(interface);interface.main(filters='Autodesk Maya', buildTemplate='animation')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Namespace Editor",
+            "command": "from CustomNamespaceEditor import interface;reload(interface);interface.main(filters='Autodesk Maya')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "divider": true,
+            "dividerLabel": "Publish"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Publisher - Animation",
+            "command": "from AnimationPublisher import interface;reload(interface);interface.main(filters='Autodesk Maya', department='animation')"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "divider": true,
+            "dividerLabel": "Functions"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "menuItem_Animation_Cast2",
+        "flags": {
+            "label": "Cast2",
+            "tearOff": true,
+            "subMenu": true
+        }
+    },
+    {
+        "parent": "menuItem_Animation_Cast2",
+        "name": "",
+        "flags": {
+            "label": "Change Polevector Type: Roll > Translate",
+            "command": "from Animation import Cast2_changePolevector;reload(Cast2_changePolevector);Cast2_changePolevector.roll2trans()"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "menuItem_Animation_Pipeline",
+        "flags": {
+            "label": "Pipeline",
+            "tearOff": true,
+            "subMenu": true
+        }
+    },
+    {
+        "parent": "menuItem_Animation_Pipeline",
+        "name": "",
+        "flags": {
+            "label": "Reconnect animation.",
+            "command": "from Animation import reconnectAnimation;reload(reconnectAnimation);reconnectAnimation.main()"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Import Preview Camera",
+            "command": "from buildScene.Plugins import importPreviewCamera;reload(importPreviewCamera);importPreviewCamera.importFunction()"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "divider": true,
+            "dividerLabel": "Third Party"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Picker - Trial Version",
+            "command": "from Picker.Viewer import interface as interface;reload(interface);interface.main(filters='Autodesk Maya', isNewWindow=True)"
+        }
+    },
+    {
+        "parent": "menuItem_Animation",
+        "name": "",
+        "flags": {
+            "label": "Studio Library",
+            "command": "import studiolibrary;reload(studiolibrary);studiolibrary.main()"
+        }
+    }
+]
