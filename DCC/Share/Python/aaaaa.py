@@ -1,0 +1,434 @@
+# -*- coding: utf-8 -*-
+import sys
+# from pprint import pprint
+
+from Qt.QtWidgets import *
+from Qt.QtCore import *
+from Qt.QtGui import *
+
+sys.dont_write_bytecode = True
+
+
+def groupWidget(
+    label='Sample Name',
+    layoutType=0,
+    noBorder=False
+):
+    groupBox = QGroupBox(label)
+    layout = None
+    if layoutType == 0:
+        layout = QVBoxLayout()
+    elif layoutType == 1:
+        layout = QHBoxLayout()
+    layout.setContentsMargins(5, 5, 5, 5)
+    layout.setSpacing(5)
+    # layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+    groupBox.setLayout(layout)
+    if noBorder:
+        groupBox.setStyleSheet('QGroupBox{border: 0px;}')
+    return [groupBox, layout]
+
+
+class DoubleSlider(QSlider):
+    def __init__(
+        self,
+        precision=2,
+        minimum=0,
+        maximum=1,
+        *args,
+        **kwargs
+    ):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.precision = precision
+        self.sub = int('1' + '0'.zfill(self.precision))
+        if self.precision == 0:
+            self.sub = 1
+        self.setOrientation(Qt.Horizontal)
+        self.setMinimum(minimum)
+        self.setMaximum(maximum)
+
+    def value(self):
+        value = float(super(self.__class__, self).value()) / self.sub
+        if self.precision == 0:
+            value = int(value)
+        return value
+
+    def setValue(self, value):
+        super(self.__class__, self).setValue(int(value))
+
+
+class DoubleField(QLineEdit):
+    def __init__(
+        self,
+        precision=2,
+        minimum=-100000,
+        maximum=100000,
+        *args,
+        **kwargs
+    ):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.precision = precision
+        self.minimum = minimum
+        self.maximum = maximum
+        self.mag = 10 ** self.precision
+
+    def text(self):
+        value = float(super(self.__class__, self).text()) * self.mag
+        if self.minimum < value:
+            self.minimum = self.minimum
+        if value > self.maximum:
+            value = self.maximum
+        if self.precision == 0:
+            value = int(value)
+        return str(value)
+
+    def getValue(self):
+        value = float(self.text())
+        if self.mag != 0:
+            value = value / self.mag
+        if self.precision == 0:
+            value = int(value)
+        return str(value)
+
+
+class DoubleFieldGrp(QWidget):
+    def __init__(self, text='', precision=2):
+        super(self.__class__, self).__init__()
+
+        self.mainLayout = QHBoxLayout()
+        self.setLayout(self.mainLayout)
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setSpacing(1)
+        self.mainLayout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        self.label = QLabel(' %s' % text)
+        self.label.setAlignment(Qt.AlignRight)
+        self.mainLayout.addWidget(self.label)
+        self.field = DoubleField(
+            precision=precision, minimum=minimum, maximum=maximum
+        )
+        self.mainLayout.addWidget(self.field)
+        value = '0.0'
+        if precision == 0:
+            value = '0'
+        self.field.setText(value)
+
+    def getValue(self):
+        return self.field.getValue()
+
+
+class DoubleSliderFieldGrp(QWidget):
+    def __init__(
+        self,
+        text='',
+        defaultValue='0.5',
+        precision=2,
+        minimum=0,
+        maximum=1
+    ):
+        super(self.__class__, self).__init__()
+        self.mainLayout = QHBoxLayout()
+        self.setLayout(self.mainLayout)
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setSpacing(1)
+        self.mainLayout.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        self.label = QLabel(' %s' % text)
+        self.label.setFixedWidth(110)
+        self.label.setAlignment(Qt.AlignLeft)
+        self.mainLayout.addWidget(self.label)
+        self.field = DoubleField(
+            precision=precision, minimum=minimum, maximum=maximum
+        )
+        self.mainLayout.addWidget(self.field)
+        self.field.returnPressed.connect(self.setTextChange)
+
+        self.slider = DoubleSlider(
+            precision=precision, minimum=minimum, maximum=maximum
+        )
+        self.mainLayout.addWidget(self.slider)
+        self.slider.valueChanged.connect(self.setValueChange)
+        self.setValueChange()
+
+        self.field.setText(defaultValue)
+        self.setTextChange()
+
+    def setTextChange(self):
+        value = self.field.text()
+        self.slider.setValue(value=value)
+
+    def setValueChange(self):
+        value = self.slider.value()
+        self.field.setText(str(value))
+
+    def getValue(self):
+        return self.field.getValue()
+
+
+class DoubleSliderFieldButtonGrp(QWidget):
+    def __init__(
+        self,
+        label='',
+        text='',
+        columnWidth=[],
+        defaultValue='0.5',
+        precision=2,
+        minimum=0,
+        maximum=1
+    ):
+        super(self.__class__, self).__init__()
+        self.mainLayout = QHBoxLayout()
+        self.setLayout(self.mainLayout)
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setSpacing(1)
+        self.mainLayout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        self.label = QLabel(' %s' % label)
+        self.label.setAlignment(Qt.AlignRight)
+        self.mainLayout.addWidget(self.label)
+        self.field = DoubleField(
+            precision=precision, minimum=minimum, maximum=maximum
+        )
+        self.mainLayout.addWidget(self.field)
+        self.field.returnPressed.connect(self.setTextChange)
+
+        self.slider = DoubleSlider(
+            precision=precision, minimum=minimum, maximum=maximum
+        )
+        self.mainLayout.addWidget(self.slider)
+        self.slider.valueChanged.connect(self.setValueChange)
+
+        self.button = QPushButton(text)
+        self.mainLayout.addWidget(self.button)
+
+        if len(columnWidth) == 2:
+            self.field.setFixedWidth(columnWidth[0])
+            self.button.setFixedWidth(columnWidth[1])
+
+        self.field.setText(defaultValue)
+        self.setTextChange()
+
+    def setTextChange(self):
+        value = self.field.text()
+        self.slider.setValue(value=value)
+
+    def setValueChange(self):
+        value = self.slider.value()
+        self.field.setText(str(value))
+
+    def getValue(self):
+        return self.field.getValue()
+
+
+class RadioButtonWidget(QWidget):
+    def __init__(
+        self,
+        flags={},
+        *args,
+        **kwargs
+    ):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.mainLayout = QHBoxLayout()
+        self.mainLayout.setContentsMargins(1, 1, 1, 1)
+        self.mainLayout.setSpacing(1)
+        self.mainLayout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        self.setLayout(self.mainLayout)
+
+        labels = flags.get('labels', [])
+        if not labels:
+            return
+        self.buttonGrp = QButtonGroup(self)
+        self.radioButtons = []
+        for label in labels:
+            radioButton = QRadioButton(label)
+            self.buttonGrp.addButton(radioButton)
+            self.mainLayout.addWidget(radioButton)
+            self.radioButtons.append(radioButton)
+
+
+class ListWidgetItem(QListWidgetItem):
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+
+
+class ListWidget(QListWidget):
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+
+    def restoreItem(self, names=[]):
+        if not names:
+            return
+        allItems = self.getItems()
+        if not allItems:
+            return
+        for i, item in enumerate(allItems):
+            if not item.text() in names:
+                continue
+            item.setSelected(True)
+
+    def getItemText(self):
+        items = self.selectedItems()
+        if not items:
+            return ''
+        return items[0].text()
+
+    def getItemsText(self):
+        results = []
+        items = self.selectedItems()
+        if not items:
+            return results
+        results = [item.text() for item in items]
+        return results
+
+    def getAllItemsText(self):
+        count = self.count()
+        if not count:
+            return []
+        return [self.item(i).text() for i in range(count)]
+
+    def getItems(self):
+        count = self.count()
+        if not count:
+            return []
+        return [self.item(i) for i in range(count)]
+
+    def getRowFromText(self, text=''):
+        items = self.getItems()
+        index = 0
+        if not items:
+            return index
+        for item in items:
+            if not text == item.text():
+                continue
+            index = self.row(item)
+            break
+        return index
+
+
+class TableModel(QAbstractItemModel):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.headers = ['Before', 'Affter']
+        self.items = []
+        self.names = []
+
+    def index(self, row, column, parent=QModelIndex()):
+        return self.createIndex(row, column, None)
+
+    def parent(self, child):
+        return QModelIndex()
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self.items)
+
+    def columnCount(self, parent=QModelIndex()):
+        return len(self.headers)
+
+    def data(self, index, role=Qt.DisplayRole):
+        row = index.row()
+
+        if not index.isValid():
+            return False
+
+        if row > len(self.items):
+            return False
+
+        if role == Qt.DisplayRole or role == Qt.EditRole:
+            dataInfo = self.items[row]
+            value = dataInfo.get('namespace', '')
+            if index.column() > 0:
+                if 'edit' in dataInfo.keys():
+                    value = dataInfo.get('edit', None)
+                    if value is None:
+                        value = dataInfo.get('namespace', None)
+            self.names.append(value)
+            self.names = list(set(self.names))
+            return value
+        else:
+            return
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if role == Qt.EditRole:
+            row = index.row()
+            column = index.column()
+            dataInfo = self.items[row]
+            oldValue = dataInfo.get('namespace', '')
+            if oldValue != value:
+                if value in self.names:
+                    mb = QMessageBox()
+                    mb.setIcon(mb.Icon.Warning)
+                    mb.setText('"{}" already exists.'.format(value))
+                    mb.setWindowTitle("Input Error")
+                    mb.exec_()
+                    return False
+                dataInfo['edit'] = value
+                self.items[row] = dataInfo
+            return True
+        return False
+
+    def headerData(self, id, orientation, role=Qt.DisplayRole):
+        if role != Qt.DisplayRole:
+            return
+        if orientation == Qt.Horizontal:
+            return self.headers[id]
+
+        if orientation == Qt.Vertical:
+            return id
+
+    def flags(self, index):
+        column = index.column()
+        fl = Qt.NoItemFlags
+        if index.isValid():
+            fl |= Qt.ItemIsEnabled | Qt.ItemIsSelectable
+            if column == 1:
+                fl |= Qt.ItemIsEditable
+        return fl
+
+    def getData(self):
+        row = self.rowCount()
+        column = self.columnCount()
+        rowData = []
+        for r in range(row):
+            columnData = {}
+            for c in range(column):
+                columnData[self.headers[c]] = self.data(self.index(r, c))
+            rowData.append(columnData)
+        return rowData
+
+
+class TableView(QTableView):
+    def __init__(
+        self,
+        *args,
+        **kwargs
+    ):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        # pprint(dir(self.horizontalHeader()))
+        # self.horizontalHeader().setSectionResizeMode(
+        #     QHeaderView.ResizeToContents
+        # )
+        self.horizontalHeader().setStretchLastSection(True)
+        self.setSelectionMode(QTableView.SingleSelection)
+        self.setSelectionBehavior(QTableView.SelectRows)
+        self.verticalHeader().setVisible(False)
+
+    def updateData(self):
+        model = self.model()
+        model.beginResetModel()
+        model.endResetModel()
+
+    # def keyPressEvent(self, event):
+    #     if event.key() == Qt.Key_Return:
+    #         selectedRows = self.selectionModel().selectedRows()
+    #         if selectedRows:
+    #             # selectedIndex = selectedRows[0]
+    #             # editableIndex = self._firstEditableIndex(selectedIndex)
+    #             # self.setCurrentIndex(editableIndex)
+    #             # self.edit(editableIndex)
+    #             print(selectedRows)
+    #     else:
+    #         QTableView.keyPressEvent(self, event)
