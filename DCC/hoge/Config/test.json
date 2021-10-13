@@ -1,0 +1,44 @@
+{
+    "openDirectory": {
+        "pluginName": "outputRootPath_Animation.py",
+        "typeIs": "file",
+        "flags": {
+            "output": "AN",
+            "fileSuffix": "_AN_"
+        }
+    },
+    "recipes": [
+        {
+            "pluginName": "outputRootPath_Animation.py",
+            "typeIs": "file",
+            "flags": {
+                "output": "AN",
+                "fileSuffix": "_AN_"
+            }
+        },
+        {
+            "pluginName": "setSceneAssetCondition.py",
+            "typeIs": "file"
+        },
+        {
+            "pluginName": "createShotmask_Animation.py",
+            "typeIs": "file"
+        },
+        {
+            "pluginName": "setDisplayCondition_Animation.py",
+            "typeIs": "file"
+        },
+        {
+            "pluginName": "createPlayblast_Animation.py",
+            "typeIs": "file",
+            "flags": {
+                "output": "AN",
+                "fileSuffix": "_AN_"
+            }
+        },
+        {
+            "pluginName": "restoreDisplayCondition_Animation.py",
+            "typeIs": "file"
+        }
+    ]
+}
